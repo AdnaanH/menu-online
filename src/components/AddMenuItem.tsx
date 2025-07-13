@@ -205,7 +205,7 @@ const AddMenuItem: React.FC<AddMenuItemProps> = ({ onAddItem, categories, onAddC
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <motion.div variants={itemVariants}>
                     <label htmlFor="price" className="block text-sm font-semibold text-gray-700 mb-3">
-                      Price ($)
+                      Price (KES)
                     </label>
                     <input
                       type="number"

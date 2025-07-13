@@ -190,7 +190,7 @@ const AdminManagement: React.FC<AdminManagementProps> = ({
     const { source, destination, type } = result;
 
     if (type === 'CATEGORY') {
-      const newCategories = Array.from(categoriesData);
+      const newCategories = Array.from(filteredCategories);
       const [reorderedCategory] = newCategories.splice(source.index, 1);
       newCategories.splice(destination.index, 0, reorderedCategory);
 
@@ -200,7 +200,13 @@ const AdminManagement: React.FC<AdminManagementProps> = ({
         order_index: index
       }));
 
-      onUpdateCategoryOrder(updatedCategories);
+      // Also need to update categories that aren't currently filtered
+      const allCategoriesUpdated = categoriesData.map(cat => {
+        const updatedCat = updatedCategories.find(uc => uc.id === cat.id);
+        return updatedCat || cat;
+      });
+
+      onUpdateCategoryOrder(allCategoriesUpdated);
     } else if (type === 'MENU_ITEM') {
       const sourceCategory = source.droppableId;
       const destCategory = destination.droppableId;

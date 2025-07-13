@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, ChefHat, Settings, LogOut, Menu, X } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 
 interface NavigationProps {
   currentView: 'menu' | 'add' | 'admin';
   onViewChange: (view: 'menu' | 'add' | 'admin') => void;
-  isAdmin: boolean;
+  isAuthenticated: boolean;
   onLogout: () => void;
 }
 
-const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAdmin, onLogout }) => {
+const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAuthenticated, onLogout }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -56,7 +57,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAd
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent"
               >
-                Zahra Al-Sham
+                Rasheeda Recipes
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0 }}
@@ -64,7 +65,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAd
                 transition={{ duration: 0.6, delay: 0.6 }}
                 className="text-xs lg:text-sm text-gray-600"
               >
-                Authentic Levantine Cuisine
+                Authentic Cuisine
               </motion.p>
             </div>
             <div className="sm:hidden">
@@ -74,7 +75,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAd
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent"
               >
-                Zahra Al-Sham
+                Rasheeda Recipes
               </motion.h1>
             </div>
           </motion.div>
@@ -98,7 +99,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAd
             >
               Menu
             </motion.button>
-            {isAdmin && (
+            {isAuthenticated && (
               <>
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
@@ -129,13 +130,26 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAd
                 <motion.button
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
-                  onClick={onLogout}
-                  className="px-4 lg:px-6 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 text-red-600 hover:bg-red-50 hover:text-red-700 text-sm lg:text-base"
+                  onClick={handleLogout}
+                  className={`px-4 lg:px-6 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 text-sm lg:text-base ${
+                    false ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg' : 'text-red-600 hover:bg-red-50 hover:text-red-700'
+                  }`}
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="hidden lg:inline">Logout</span>
                 </motion.button>
               </>
+            )}
+            {!isAuthenticated && (
+              <motion.button
+                whileHover={{ scale: 1.05, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onViewChange('admin')}
+                className="px-4 lg:px-6 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 text-sm lg:text-base text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+              >
+                <Settings className="w-4 h-4" />
+                <span className="hidden lg:inline">Admin Login</span>
+              </motion.button>
             )}
           </motion.div>
 
@@ -180,7 +194,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAd
                 >
                   Menu
                 </motion.button>
-                {isAdmin && (
+                {isAuthenticated && (
                   <>
                     <motion.button
                       whileHover={{ scale: 1.02, x: 5 }}
@@ -218,6 +232,17 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAd
                       <span>Logout</span>
                     </motion.button>
                   </>
+                )}
+                {!isAuthenticated && (
+                  <motion.button
+                    whileHover={{ scale: 1.02, x: 5 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => handleViewChange('admin')}
+                    className="w-full text-left px-4 py-3 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 text-blue-600 hover:bg-blue-50 hover:text-blue-700"
+                  >
+                    <Settings className="w-4 h-4" />
+                    <span>Admin Login</span>
+                  </motion.button>
                 )}
               </div>
             </motion.div>

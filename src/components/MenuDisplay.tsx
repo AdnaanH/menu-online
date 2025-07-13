@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { DragDropContext, Droppable, DropResult } from '@hello-pangea/dnd';
 import { MenuItem } from '../types/menu';
 import { Category } from '../hooks/useSupabaseData';
 import SearchBar from './SearchBar';
@@ -50,6 +49,7 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({
       grouped[category].sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
     });
 
+    // Sort categories by order_index to match admin view
     const filteredCats = categoriesData
       .filter(cat => grouped[cat.key] && grouped[cat.key].length > 0)
       .sort((a, b) => a.order_index - b.order_index);
@@ -77,85 +77,6 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({
       }
       return newSet;
     });
-  };
-
-  const handleDragEnd = (result: DropResult) => {
-    if (!result.destination || !isAdmin) return;
-
-    const { source, destination, type } = result;
-
-    if (type === 'CATEGORY') {
-      const newCategories = Array.from(categoriesData);
-      const [reorderedCategory] = newCategories.splice(source.index, 1);
-      newCategories.splice(destination.index, 0, reorderedCategory);
-
-      // Update order_index for all categories
-      const updatedCategories = newCategories.map((cat, index) => ({
-        ...cat,
-        order_index: index
-      }));
-
-      onUpdateCategoryOrder?.(updatedCategories);
-    } else if (type === 'MENU_ITEM') {
-      const sourceCategory = source.droppableId;
-      const destCategory = destination.droppableId;
-
-      if (sourceCategory === destCategory) {
-        // Reordering within the same category
-        const categoryItems = [...groupedItems[sourceCategory]];
-        const [reorderedItem] = categoryItems.splice(source.index, 1);
-        categoryItems.splice(destination.index, 0, reorderedItem);
-
-        // Update order_index for items in this category
-        const updatedItems = categoryItems.map((item, index) => ({
-          ...item,
-          orderIndex: index
-        }));
-
-        // Update all menu items with new order
-        const allUpdatedItems = menuItems.map(item => {
-          if (item.category === sourceCategory) {
-            const updatedItem = updatedItems.find(ui => ui.id === item.id);
-            return updatedItem || item;
-          }
-          return item;
-        });
-
-        onUpdateItemOrder?.(allUpdatedItems);
-      } else {
-        // Moving between categories
-        const sourceItems = [...groupedItems[sourceCategory]];
-        const destItems = [...(groupedItems[destCategory] || [])];
-        
-        const [movedItem] = sourceItems.splice(source.index, 1);
-        movedItem.category = destCategory;
-        destItems.splice(destination.index, 0, movedItem);
-
-        // Update order_index for both categories
-        const updatedSourceItems = sourceItems.map((item, index) => ({
-          ...item,
-          orderIndex: index
-        }));
-        const updatedDestItems = destItems.map((item, index) => ({
-          ...item,
-          orderIndex: index
-        }));
-
-        // Update all menu items
-        const allUpdatedItems = menuItems.map(item => {
-          if (item.category === sourceCategory) {
-            const updatedItem = updatedSourceItems.find(ui => ui.id === item.id);
-            return updatedItem || item;
-          } else if (item.category === destCategory || item.id === movedItem.id) {
-            const updatedItem = updatedDestItems.find(ui => ui.id === item.id);
-            return updatedItem || item;
-          }
-          return item;
-        });
-
-        onUpdateItemOrder?.(allUpdatedItems);
-      }
-    }
   };
 
   const containerVariants = {
@@ -195,8 +116,9 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8"
         >
-          Discover authentic Levantine flavors prepared with traditional recipes passed down through generations, 
-          crafted with the finest ingredients and served with love
+          Our curry stays true to authentic Indian cooking—no cream or artificial colors.
+Roti and puri are made with wholemeal flour, and our curries are prepared
+using only butter or ghee and natural spices.
         </motion.p>
 
         <SearchBar
@@ -207,43 +129,38 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({
         />
       </motion.div>
 
-      <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="categories" type="CATEGORY" isDropDisabled={!isAdmin}>
-          {(provided) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              {filteredCategories.map((category, index) => {
-                const items = groupedItems[category.key] || [];
-                const isExpanded = expandedCategories.has(category.key);
+      {/* User view - no drag and drop, uses grid layout */}
+      <div>
+        {filteredCategories.map((category, index) => {
+          const items = groupedItems[category.key] || [];
+          const isExpanded = expandedCategories.has(category.key);
 
-                return (
-                  <CollapsibleCategory
-                    key={category.key}
-                    title={category.label}
-                    categoryKey={category.key}
-                    itemCount={items.length}
-                    isExpanded={isExpanded}
-                    onToggle={() => toggleCategory(category.key)}
-                    isDragDisabled={!isAdmin}
-                    index={index}
-                    showDragHandle={isAdmin}
-                  >
-                    {items.map((item, itemIndex) => (
-                      <DraggableMenuItem
-                        key={item.id}
-                        item={item}
-                        index={itemIndex}
-                        isAdmin={isAdmin}
-                        isDragDisabled={!isAdmin}
-                      />
-                    ))}
-                  </CollapsibleCategory>
-                );
-              })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+          return (
+            <CollapsibleCategory
+              key={category.key}
+              title={category.label}
+              categoryKey={category.key}
+              itemCount={items.length}
+              isExpanded={isExpanded}
+              onToggle={() => toggleCategory(category.key)}
+              isDragDisabled={true}
+              index={index}
+              showDragHandle={false}
+              isAdmin={false}
+            >
+              {items.map((item, itemIndex) => (
+                <DraggableMenuItem
+                  key={item.id}
+                  item={item}
+                  index={itemIndex}
+                  isAdmin={false}
+                  isDragDisabled={true}
+                />
+              ))}
+            </CollapsibleCategory>
+          );
+        })}
+      </div>
 
       {filteredCategories.length === 0 && (
         <motion.div

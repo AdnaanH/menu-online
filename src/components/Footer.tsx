@@ -50,9 +50,9 @@ const Footer: React.FC = () => {
           <motion.div variants={itemVariants} className="space-y-6">
             <div>
               <h3 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-2">
-                Zahra Al-Sham
+                Rasheeda Recipes
               </h3>
-              <p className="text-gray-300 text-sm">Authentic Levantine Cuisine</p>
+              <p className="text-gray-300 text-sm">Authentic Indian Cuisine</p>
             </div>
             <p className="text-gray-400 leading-relaxed">
               Experience the rich flavors of the Levant with our traditional recipes passed down through generations, crafted with love and authentic ingredients.
@@ -84,8 +84,8 @@ const Footer: React.FC = () => {
               <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-amber-500 mt-1 flex-shrink-0" />
                 <div>
-                  <p className="text-gray-300 text-sm">123 Damascus Street</p>
-                  <p className="text-gray-300 text-sm">Heritage District, City 12345</p>
+                  <p className="text-gray-300 text-sm">Bogani Road</p>
+                  <p className="text-gray-300 text-sm">Rasheeda Recipes</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
@@ -94,7 +94,7 @@ const Footer: React.FC = () => {
               </div>
               <div className="flex items-center space-x-3">
                 <Mail className="w-5 h-5 text-amber-500 flex-shrink-0" />
-                <p className="text-gray-300 text-sm">info@zahraalsham.com</p>
+                <p className="text-gray-300 text-sm">info@rasheedarecipes.com</p>
               </div>
             </div>
           </motion.div>
@@ -177,7 +177,7 @@ const Footer: React.FC = () => {
           className="mt-12 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
         >
           <p className="text-gray-400 text-sm">
-            © 2025 Zahra Al-Sham. All rights reserved.
+            © 2025 Rasheeda Recipes. All rights reserved.
           </p>
           <div className="flex space-x-6">
             <a href="#" className="text-gray-400 hover:text-amber-500 text-sm transition-colors">

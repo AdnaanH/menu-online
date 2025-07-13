@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import Navigation from './components/Navigation';
+import LoginForm from './components/LoginForm';
 import MenuDisplay from './components/MenuDisplay';
 import AddMenuItem from './components/AddMenuItem';
 import AdminManagement from './components/AdminManagement';
 import Footer from './components/Footer';
+import { useAuth } from './hooks/useAuth';
 import { useSupabaseData } from './hooks/useSupabaseData';
 
 function App() {
   const [currentView, setCurrentView] = useState<'menu' | 'add' | 'admin'>('menu');
-  const [isAdmin, setIsAdmin] = useState(true);
+  const { isAuthenticated, isLoading: authLoading, login, logout } = useAuth();
 
   const {
     menuItems,
@@ -26,10 +28,10 @@ function App() {
     updateCategoryOrder
   } = useSupabaseData();
 
-  const handleLogout = () => {
-    setIsAdmin(false);
-    setCurrentView('menu');
-  };
+  // Show login form only when trying to access admin features without authentication
+  if (!isAuthenticated && (currentView === 'add' || currentView === 'admin')) {
+    return <LoginForm onLogin={login} isLoading={authLoading} />;
+  }
 
   if (loading) {
     return (
@@ -90,8 +92,8 @@ function App() {
       <Navigation 
         currentView={currentView} 
         onViewChange={setCurrentView} 
-        isAdmin={isAdmin}
-        onLogout={handleLogout}
+        isAuthenticated={isAuthenticated}
+        onLogout={logout}
       />
       
       <main className="min-h-screen">
@@ -100,17 +102,17 @@ function App() {
             menuItems={menuItems} 
             categories={categoriesObject}
             categoriesData={categories}
-            isAdmin={isAdmin}
+            isAdmin={false}
             onUpdateItemOrder={updateItemOrder}
             onUpdateCategoryOrder={updateCategoryOrder}
           />
-        ) : currentView === 'add' ? (
+        ) : currentView === 'add' && isAuthenticated ? (
           <AddMenuItem 
             onAddItem={addMenuItem} 
             categories={categoriesObject}
             onAddCategory={addCategory}
           />
-        ) : (
+        ) : currentView === 'admin' && isAuthenticated ? (
           <AdminManagement 
             menuItems={menuItems}
             categories={categoriesObject}
@@ -120,6 +122,16 @@ function App() {
             onAddCategory={addCategory}
             onEditCategory={updateCategory}
             onDeleteCategory={deleteCategory}
+            onUpdateItemOrder={updateItemOrder}
+            onUpdateCategoryOrder={updateCategoryOrder}
+          />
+        ) : (
+          // Fallback to menu if trying to access admin features without auth
+          <MenuDisplay 
+            menuItems={menuItems} 
+            categories={categoriesObject}
+            categoriesData={categories}
+            isAdmin={false}
             onUpdateItemOrder={updateItemOrder}
             onUpdateCategoryOrder={updateCategoryOrder}
           />

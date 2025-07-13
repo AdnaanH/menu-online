@@ -210,18 +210,38 @@ export const useSupabaseData = () => {
 
   const updateItemOrder = async (items: MenuItem[]) => {
     try {
-      const updates = items.map((item, index) => ({
-        id: item.id,
-        order_index: index
-      }));
+      // Group items by category and update their order within each category
+      const itemsByCategory = items.reduce((acc, item) => {
+        if (!acc[item.category]) {
+          acc[item.category] = [];
+        }
+        acc[item.category].push(item);
+        return acc;
+      }, {} as Record<string, MenuItem[]>);
 
-      for (const update of updates) {
-        await supabase
-          .from('menu_items')
-          .update({ order_index: update.order_index })
-          .eq('id', update.id);
+      // Update order_index for each item within its category
+      const updates = Object.entries(itemsByCategory).flatMap(([categoryKey, categoryItems]) => {
+        return categoryItems.map((item, index) => {
+          return supabase
+            .from('menu_items')
+            .update({ 
+              order_index: index,
+              category_key: item.category,
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', item.id);
+        });
+      });
+
+      const results = await Promise.all(updates);
+      
+      // Check for any errors
+      const errors = results.filter(result => result.error);
+      if (errors.length > 0) {
+        throw new Error(`Failed to update ${errors.length} menu items`);
       }
 
+      // Update local state
       setMenuItems(items);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update item order');
@@ -231,18 +251,17 @@ export const useSupabaseData = () => {
 
   const updateCategoryOrder = async (categories: Category[]) => {
     try {
-      const updates = categories.map((category, index) => ({
-        key: category.key,
-        order_index: index
-      }));
-
-      for (const update of updates) {
-        await supabase
+      const updates = categories.map((category, index) => {
+        return supabase
           .from('categories')
-          .update({ order_index: update.order_index })
-          .eq('key', update.key);
-      }
+          .update({ 
+            order_index: index,
+            updated_at: new Date().toISOString()
+          })
+          .eq('key', category.key);
+      });
 
+      await Promise.all(updates);
       setCategories(categories);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update category order');
