@@ -6,7 +6,7 @@ import { MenuItem } from '../types/menu';
 interface AddMenuItemProps {
   onAddItem: (item: Omit<MenuItem, 'id'>) => Promise<MenuItem>;
   categories: Record<string, string>;
-  onAddCategory: (key: string, label: string) => Promise<any>;
+  onAddCategory: (key: string, label: string) => Promise<void>;
 }
 
 const AddMenuItem: React.FC<AddMenuItemProps> = ({ onAddItem, categories, onAddCategory }) => {
@@ -205,7 +205,7 @@ const AddMenuItem: React.FC<AddMenuItemProps> = ({ onAddItem, categories, onAddC
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <motion.div variants={itemVariants}>
                     <label htmlFor="price" className="block text-sm font-semibold text-gray-700 mb-3">
-                      Price (KES)
+                      Price ($)
                     </label>
                     <input
                       type="number"

@@ -44,15 +44,15 @@ const Footer: React.FC = () => {
       variants={containerVariants}
       className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-8 sm:py-16">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Restaurant Info */}
           <motion.div variants={itemVariants} className="space-y-6">
             <div>
               <h3 className="text-2xl font-bold bg-gradient-to-r from-amber-400 to-orange-500 bg-clip-text text-transparent mb-2">
-                Rasheeda Recipes
+                Menu Masterpiece
               </h3>
-              <p className="text-gray-300 text-sm">Authentic Indian Cuisine</p>
+              <p className="text-gray-300 text-sm">Authentic All Cuisine</p>
             </div>
             <p className="text-gray-400 leading-relaxed">
               Experience the rich flavors of the Levant with our traditional recipes passed down through generations, crafted with love and authentic ingredients.
@@ -84,8 +84,8 @@ const Footer: React.FC = () => {
               <div className="flex items-start space-x-3">
                 <MapPin className="w-5 h-5 text-amber-500 mt-1 flex-shrink-0" />
                 <div>
-                  <p className="text-gray-300 text-sm">Bogani Road</p>
-                  <p className="text-gray-300 text-sm">Rasheeda Recipes</p>
+                  <p className="text-gray-300 text-sm">London Road</p>
+                  <p className="text-gray-300 text-sm">Menu Masterpiece</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
@@ -177,7 +177,7 @@ const Footer: React.FC = () => {
           className="mt-12 pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"
         >
           <p className="text-gray-400 text-sm">
-            © 2025 Rasheeda Recipes. All rights reserved.
+            © 2025 Menu Masterpiece. All rights reserved.
           </p>
           <div className="flex space-x-6">
             <a href="#" className="text-gray-400 hover:text-amber-500 text-sm transition-colors">

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, ChefHat, Settings, LogOut, Menu, X } from 'lucide-react';
-import { useAuth } from '../hooks/useAuth';
 
 interface NavigationProps {
   currentView: 'menu' | 'add' | 'admin';
@@ -34,7 +33,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAu
       transition={{ duration: 0.6, ease: "easeOut" }}
       className="bg-white shadow-lg border-b border-amber-100 sticky top-0 z-50"
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo Section */}
           <motion.div
@@ -57,7 +56,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAu
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent"
               >
-                Rasheeda Recipes
+                Menu Masterpiece
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0 }}
@@ -75,7 +74,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAu
                 transition={{ duration: 0.6, delay: 0.4 }}
                 className="text-lg font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent"
               >
-                Rasheeda Recipes
+                Menu Masterpiece
               </motion.h1>
             </div>
           </motion.div>
@@ -131,9 +130,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAu
                   whileHover={{ scale: 1.05, y: -2 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={handleLogout}
-                  className={`px-4 lg:px-6 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 text-sm lg:text-base ${
-                    false ? 'bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg' : 'text-red-600 hover:bg-red-50 hover:text-red-700'
-                  }`}
+                  className="px-4 lg:px-6 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 text-sm lg:text-base text-red-600 hover:bg-red-50 hover:text-red-700"
                 >
                   <LogOut className="w-4 h-4" />
                   <span className="hidden lg:inline">Logout</span>
@@ -161,7 +158,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentView, onViewChange, isAu
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={toggleMobileMenu}
-            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors"
+            className="md:hidden p-2 rounded-lg text-gray-700 hover:bg-amber-50 hover:text-amber-700 transition-colors z-50"
           >
             {isMobileMenuOpen ? (
               <X className="w-6 h-6" />

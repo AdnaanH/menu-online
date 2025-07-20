@@ -41,7 +41,7 @@ const DraggableMenuItem: React.FC<DraggableMenuItemProps> = ({
             <div className="flex items-start justify-between mb-3">
               <h4 className="text-lg font-semibold text-gray-900 leading-tight">{item.name}</h4>
               <span className="text-xl font-bold bg-gradient-to-r from-amber-600 to-orange-600 bg-clip-text text-transparent ml-4 flex-shrink-0">
-                KES{item.price.toFixed(2)}
+                ${item.price.toFixed(2)}
               </span>
             </div>
             <p className="text-gray-600 text-sm mb-4 leading-relaxed">{item.description}</p>

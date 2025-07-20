@@ -220,7 +220,7 @@ export const useSupabaseData = () => {
       }, {} as Record<string, MenuItem[]>);
 
       // Update order_index for each item within its category
-      const updates = Object.entries(itemsByCategory).flatMap(([categoryKey, categoryItems]) => {
+      const updates = Object.entries(itemsByCategory).flatMap(([, categoryItems]) => {
         return categoryItems.map((item, index) => {
           return supabase
             .from('menu_items')

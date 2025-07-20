@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import Navigation from './components/Navigation';
 import LoginForm from './components/LoginForm';
 import MenuDisplay from './components/MenuDisplay';
@@ -9,8 +9,56 @@ import Footer from './components/Footer';
 import { useAuth } from './hooks/useAuth';
 import { useSupabaseData } from './hooks/useSupabaseData';
 
+// Popup component for meal preparation times
+const PrepTimePopup: React.FC<{
+  categories: { key: string; label: string; prepTime?: string }[];
+  onClose: () => void;
+}> = ({ categories, onClose }) => (
+  <AnimatePresence>
+    <motion.div
+      initial={{ opacity: 0, y: -40 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -40 }}
+      transition={{ duration: 0.3 }}
+      className="fixed top-16 lg:left-1/3 left-0 z-50 -translate-x-1/2 bg-white shadow-2xl rounded-xl px-4 sm:px-6 py-5 border border-amber-200 w-[95vw] max-w-md"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div className="flex items-center lg:justify-between justify-start gap-16 mb-2">
+        <h3 className="text-lg font-semibold text-amber-700 flex items-center gap-2">
+          <span className=" w-5 h-5 bg-amber-100 rounded-full flex items-center justify-center mr-1">⏱️</span>
+          Meal Preparation Times
+        </h3>
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="text-gray-400 hover:text-amber-600 transition-colors rounded-full p-1 focus:outline-none focus:ring-2 focus:ring-amber-300"
+        >
+          <svg width="20" height="20" fill="none" viewBox="0 0 20 20">
+            <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" d="M6 6l8 8M14 6l-8 8"/>
+          </svg>
+        </button>
+      </div>
+      <ul className="divide-y divide-amber-100">
+        {categories.map(cat => (
+          <li key={cat.key} className="py-2 flex justify-between items-center">
+            <span className="font-medium text-gray-800">{cat.label}</span>
+            <span className="text-sm text-amber-600 font-semibold">
+              {cat.prepTime || '10-20 min'}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="mt-3 text-xs text-gray-500 text-center">
+        Actual times may vary based on order volume.
+      </p>
+    </motion.div>
+  </AnimatePresence>
+);
+
 function App() {
   const [currentView, setCurrentView] = useState<'menu' | 'add' | 'admin'>('menu');
+  const [showPrepPopup, setShowPrepPopup] = useState(true);
   const { isAuthenticated, isLoading: authLoading, login, logout } = useAuth();
 
   const {
@@ -27,6 +75,11 @@ function App() {
     updateItemOrder,
     updateCategoryOrder
   } = useSupabaseData();
+
+  // Show popup every time user navigates to menu
+  React.useEffect(() => {
+    if (currentView === 'menu') setShowPrepPopup(true);
+  }, [currentView]);
 
   // Show login form only when trying to access admin features without authentication
   if (!isAuthenticated && (currentView === 'add' || currentView === 'admin')) {
@@ -76,11 +129,20 @@ function App() {
     );
   }
 
-  // Convert categories array to object for compatibility
   const categoriesObject = categories.reduce((acc, cat) => {
     acc[cat.key] = cat.label;
     return acc;
   }, {} as Record<string, string>);
+
+  const categoriesWithPrep = categories.map(cat => ({
+    ...cat,
+    prepTime: (
+      cat.label.toLowerCase().includes('starter') ? '10 min' :
+      cat.label.toLowerCase().includes('main') ? '20-30 min' :
+      cat.label.toLowerCase().includes('dessert') ? '8-15 min' :
+      '10-20 min'
+    )
+  }));
 
   return (
     <motion.div
@@ -89,6 +151,16 @@ function App() {
       transition={{ duration: 0.5 }}
       className="min-h-screen bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50"
     >
+      {/* Preparation Time Popup */}
+      <AnimatePresence>
+        {showPrepPopup && currentView === 'menu' && (
+          <PrepTimePopup
+            categories={categoriesWithPrep}
+            onClose={() => setShowPrepPopup(false)}
+          />
+        )}
+      </AnimatePresence>
+
       <Navigation 
         currentView={currentView} 
         onViewChange={setCurrentView} 

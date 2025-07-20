@@ -28,7 +28,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, isLoading }) => {
         setError('Invalid email or password');
         setPassword('');
       }
-    } catch (err) {
+    } catch {
       setError('Login failed. Please try again.');
       setPassword('');
     }
@@ -98,7 +98,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, isLoading }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   disabled={isLoading}
-                  className="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="Enter your email"
                   autoComplete="email"
                 />
@@ -117,7 +117,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, isLoading }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   disabled={isLoading}
-                  className="w-full pl-12 pr-12 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-4 border border-gray-300 rounded-xl focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all duration-200 text-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
                   placeholder="Enter your password"
                   autoComplete="current-password"
                 />
@@ -182,9 +182,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ onLogin, isLoading }) => {
             variants={itemVariants}
             className="mt-8 text-center"
           >
-            <p className="text-sm text-gray-500">
-              Demo credentials: <span className="font-medium">admin / admin123</span>
-            </p>
+            <button
+              type="button"
+              className="text-sm text-amber-600 hover:underline font-medium transition-colors"
+              onClick={() => window.location.href = '/'}
+            >
+              Go Back Home
+            </button>
           </motion.div>
         </motion.div>
       </motion.div>

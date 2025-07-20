@@ -19,15 +19,12 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({
   menuItems, 
   categories, 
   categoriesData,
-  isAdmin = false,
-  onUpdateItemOrder,
-  onUpdateCategoryOrder
 }) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
   // Filter and group items
-  const { filteredItems, groupedItems, filteredCategories } = useMemo(() => {
+  const { groupedItems, filteredCategories } = useMemo(() => {
     const filtered = menuItems.filter(item => {
       const searchLower = searchTerm.toLowerCase();
       const matchesItem = item.name.toLowerCase().includes(searchLower) ||
@@ -36,7 +33,7 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({
       return matchesItem || matchesCategory;
     });
 
-    const grouped = filtered.reduce((acc, item) => {
+    const grouped = filtered.reduce((acc: Record<string, MenuItem[]>, item) => {
       if (!acc[item.category]) {
         acc[item.category] = [];
       }
@@ -46,15 +43,15 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({
 
     // Sort items within each category by order_index
     Object.keys(grouped).forEach(category => {
-      grouped[category].sort((a, b) => (a.orderIndex || 0) - (b.orderIndex || 0));
+      grouped[category].sort((a, b) => (a.orderIndex ?? 0) - (b.orderIndex ?? 0));
     });
 
     // Sort categories by order_index to match admin view
     const filteredCats = categoriesData
       .filter(cat => grouped[cat.key] && grouped[cat.key].length > 0)
-      .sort((a, b) => a.order_index - b.order_index);
+      .sort((a, b) => (a.order_index ?? 0) - (b.order_index ?? 0));
 
-    return { filteredItems: filtered, groupedItems: grouped, filteredCategories: filteredCats };
+    return { groupedItems: grouped, filteredCategories: filteredCats };
   }, [menuItems, categories, categoriesData, searchTerm]);
 
   // Auto-expand categories when searching
@@ -116,9 +113,7 @@ const MenuDisplay: React.FC<MenuDisplayProps> = ({
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mb-8"
         >
-          Our curry stays true to authentic Indian cooking—no cream or artificial colors.
-Roti and puri are made with wholemeal flour, and our curries are prepared
-using only butter or ghee and natural spices.
+          Discover a menu crafted with care and tradition. Each dish is prepared using fresh, natural ingredients—no artificial colors or cream—ensuring authentic flavors in every bite. Enjoy wholemeal roti and puri, and curries made with pure butter or ghee and a blend of aromatic spices. Explore our selection and find your new favorite today!
         </motion.p>
 
         <SearchBar
